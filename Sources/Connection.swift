@@ -122,6 +122,10 @@ public class Connection: SQL.Connection {
         return .OK
     }
     
+    private var mostRecentErrorMessage: String? {
+        return String.fromCString(mysql_error(connection))
+    }
+    
     public func open() throws {
         guard mysql_real_connect(
             connection,
@@ -215,7 +219,7 @@ public class Connection: SQL.Connection {
     private var statusError: Error {
         return Error.ErrorCode(
             UInt(mysql_errno(connection)),
-            String.fromCString(mysql_error(connection)) ?? "None"
+            mostRecentErrorMessage ?? "None"
         )
     }
 }
